@@ -65,6 +65,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -223,6 +224,7 @@ public final class Launcher extends Activity
     private DragLayer mDragLayer;
     private DragController mDragController;
 
+    private PowerManager mPowerManager;
     private AppWidgetManager mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
@@ -357,7 +359,7 @@ public final class Launcher extends Activity
                 ExtendedPropertiesUtils.PARANOID_STRING_DELIMITER);
 
             Settings.System.putString(getContentResolver(),
-                ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i], 
+                ExtendedPropertiesUtils.PARANOID_COLORS_SETTINGS[i],
                 colors[0] + "|" + (stockColors ? "00000000" : launcherColors[i]) +
                 "|1|"+String.valueOf(speed));
         }
@@ -422,6 +424,8 @@ public final class Launcher extends Activity
 
         // Load all preferences
         PreferencesProvider.load(this);
+
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
@@ -835,6 +839,7 @@ public final class Launcher extends Activity
         updateWallpaperVisibility(true);
 
         super.onPause();
+
         mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
@@ -3055,9 +3060,10 @@ public final class Launcher extends Activity
         }
     }
 
-    void showWorkspace(boolean animated) {
+    void showWorkspace(boolean animated) {        
         mIsAbsent = false;
-        fadeColors(800, false);
+        if (mPowerManager.isScreenOn())
+            fadeColors(800, false);
         showWorkspace(animated, null);
     }
 
