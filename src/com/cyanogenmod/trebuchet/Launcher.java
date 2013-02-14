@@ -108,6 +108,10 @@ import com.android.common.Search;
 import com.cyanogenmod.trebuchet.DropTarget.DragObject;
 import com.cyanogenmod.trebuchet.preference.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
@@ -375,6 +379,7 @@ public final class Launcher extends Activity
         } catch (java.io.IOException e) {
             return true;
         }
+   }
 
    private static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
